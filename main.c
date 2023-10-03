@@ -5,7 +5,7 @@
 #include <conio.h>
 #include <windows.h>	// Include windows.h library for Sleep() function
 
-#define debug
+//#define debug
 
 #ifdef debug							// define "debug" while the programm is beeing testet so assert-functions get compiled 
 #include <assert.h>
@@ -14,7 +14,7 @@ void testCase();						// testCases for functions
 
 void testChooseOption();
 void testRangeOfOption(int*);
-void testMoveTheArrow(char*, int*);
+void testMoveTheArrow(char*, char*, int*);
 #endif
 
 
@@ -43,11 +43,11 @@ void rangeOfOption(int* opt)
 		*opt = 1;			
 }
 
-void moveTheArrow(char key, int* opt)
+void moveTheArrow(char key1, char key2, int* opt)
 {
-	if (key == 'i')
+	if (key1 == -32 && key2 == 72)
 		(*opt)--;
-	else if (key == 'k')
+	else if (key1 == -32 && key2 == 80)
 		(*opt)++;
 
 	rangeOfOption(opt);		//	Limits the option code so it's not out of range
@@ -56,24 +56,25 @@ void moveTheArrow(char key, int* opt)
 char chooseOption()
 {
 	int opt = 0;
-	char key;
+	char key1 = 0, key2 = 0;
 
 	while (1)
 	{
-		puts("Choose the option\t\t\ti - Up\tk - Down\tEnter - Choose\n\n\n\n");
+		puts("Choose the option\t\t\tArrow up - Up\tArrow down - Down\tEnter - Choose\n\n\n\n");
 
 		
 		showTargetedOpt(opt);		// Shows the targeted option by arrow
 
 
-		key = _getch();				// reading the key 
-
-		system("cls");
-
-		if (key == 13)
+		key1 = _getch();	// reading the 2 keys because  arrows give 2 values - Here: The first key
+		system("cls");		
+		if (key1 == 13)		// If key is Enter (with ASCII code 13), the function returns the 
 			return opt;
+		key2 = _getch();	// Here: the second key
 
-		moveTheArrow(key, &opt);	// Moves the arrow depending on key by changing the option
+		
+
+		moveTheArrow(key1, key2, &opt);	// Moves the arrow depending on key by changing the option
 	}
 }
 
@@ -190,46 +191,52 @@ void testRangeOfOption(int* opt)
 	assert(*opt == 0);
 }
 
-void testMoveTheArrow(char* key, int* opt) 
+void testMoveTheArrow(char* key1, char* key2, int* opt) 
 {
-	*key = 'o';
-	*opt = 1;
-	moveTheArrow(*key, opt);		// Changes the option depending on key and so moves the arrow 
+	*key1 = -32;				
+	*key2 = 80;				// key2 - Up returns 72, Down returns 80
+	*opt = 0;
+	moveTheArrow(*key1, *key2, opt);		// Changes the option depending on key and so moves the arrow 
 	assert(*opt == 1);
 
-	*key = 'i';
+	*key1 = -32;
+	*key2 = 72;
 	*opt = 1;
-	moveTheArrow(*key, opt);
+	moveTheArrow(*key1, *key2, opt);
 	assert(*opt == 0);
 
-	*key = 'i';
+	*key1 = 'b';
+	*key2 = NULL;
 	*opt = 0;
-	moveTheArrow(*key, opt);		
+	moveTheArrow(*key1, *key2, opt);
 	assert(*opt == 0);
 
-	*key = 'k';
+	*key1 = -32;
+	*key2 = 80;
 	*opt = 0;
-	moveTheArrow(*key, opt);
+	moveTheArrow(*key1, *key2, opt);
 	assert(*opt == 1);
 
-	*key = 'k';
+	*key1 = -32;
+	*key2 = 80;
 	*opt = 1;
-	moveTheArrow(*key, opt);
+	moveTheArrow(*key1, *key2, opt);
 	assert(*opt == 1);
 
-	*key = 'd';
+	*key1 = -32;
+	*key2 = 72;
 	*opt = 0;
-	moveTheArrow(*key, opt);
+	moveTheArrow(*key1, *key2, opt);
 	assert(*opt == 0);
 }
 
 void testChooseOption()
 {
-	int opt;
-	char key;
+	int opt = 0;
+	char key1 = 0, key2 = 0;
 
 	testRangeOfOption(&opt);
-	testMoveTheArrow(&key, &opt);	
+	testMoveTheArrow(&key1, &key2, &opt);	
 }
 
 void testCase()
