@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <conio.h>
-#include <windows.h>  // Include windows.h library for Sleep() function
+#include <windows.h>	// Include windows.h library for Sleep() function
 
 #define debug
 
-#ifdef debug				// define "debug" while the programm is beeing testet so assert-functions get compiled 
+#ifdef debug							// define "debug" while the programm is beeing testet so assert-functions get compiled 
 #include <assert.h>
 
 void testCase();						// testCases for functions
@@ -25,14 +25,14 @@ void showTargetedOpt(int opt)
 	else
 		printf("    ");
 
-	printf("Calculate velocity\n"); 
+	puts("Calculate velocity"); 
 
 	if (opt == 1)
 		printf("--> ");
 	else
 		printf("    ");
 
-	printf("Calculate acceleration\n");
+	puts("Calculate acceleration");
 }
 
 void rangeOfOption(int* opt)
@@ -53,14 +53,14 @@ void moveTheArrow(char key, int* opt)
 	rangeOfOption(opt);		//	Limits the option code so it's not out of range
 }
 
-static char chooseOption()
+char chooseOption()
 {
 	int opt = 0;
 	char key;
 
 	while (1)
 	{
-		printf("Choose the option\t\t\ti - Up\tk - Down\tEnter - Choose\n\n\n\n\n");
+		puts("Choose the option\t\t\ti - Up\tk - Down\tEnter - Choose\n\n\n\n");
 
 		
 		showTargetedOpt(opt);		// Shows the targeted option by arrow
@@ -83,20 +83,20 @@ double calcV()
 {
 	double s = 0, v = 0, t = 0;
 
-	printf("s - The lastet way in m\t v - The speed in m/s\t t - The time in s\n");
-	printf("    s\n");
-	printf("v = -\n");
-	printf("    t\n\n\n\n");
+	puts("s - The lastet way in m\t v - The speed in m/s\t t - The time in s");
+	puts("    s");
+	puts("v = -");
+	puts("    t\n\n\n");
 
-	printf("Type s in m:\n");
+	puts("Type s in m:");
 	scanf("%lf", &s);
-	printf("Type t in s:\n");
+	puts("Type t in s:");
 	scanf("%lf", &t);
 
 	double res = s / t;
 	printf("Result: v = %.7lf m/s\n\n", res);
 
-	printf("Press any key to continue.\n");
+	puts("Press any key to continue.");
 	char any_key = _getch();
 	system("cls");
 
@@ -106,20 +106,20 @@ double calcA()
 {
 	double v = 0, a = 0, t = 0;
 
-	printf("a - The acceleration way in m/s^2\t v - The speed in m/s\t t - The time in s\n");
-	printf("    v\n");
-	printf("a = -\n");
-	printf("    t\n\n\n\n");
+	puts("a - The acceleration way in m/s^2\t v - The speed in m/s\t t - The time in s");
+	puts("    v");
+	puts("a = -");
+	puts("    t\n\n\n");
 
-	printf("Type v in m:\n");
+	puts("Type v in m:");
 	scanf("%lf", &v);
-	printf("Type t in s:\n");
+	puts("Type t in s:");
 	scanf("%lf", &t);
 
 	double res = v / t;
 	printf("Result: v = %.7lf m/s^2\n\n", res);
 
-	printf("Press any key to continue.\n");
+	puts("Press any key to continue.");
 	char any_key = _getch();
 	system("cls");
 
@@ -146,11 +146,11 @@ int main()
 	testCase();			// starts the test operation
 	#endif
 
-	int option = 0;
+	int option = 0, greetingTimeout = 4000;		// The period of time in miliseconds where the welcome message is shown
 
-	printf("Calculator for physics 2023\n");																				// 
-	printf("Calculation of velocity and acceleration\nProgrammed on C\nPlease wait and don't press any button...");		//	 Welcome 
-	Sleep(4000);																										//	 message
+	puts("Calculator for physics 2023\n");																				// 
+	puts("Calculation of velocity and acceleration\nProgrammed on C\nPlease wait and don't press any button...");		//	 Welcome 
+	Sleep(greetingTimeout);																								//	 message
 	system("cls");																										//
 	 
 
