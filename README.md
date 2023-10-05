@@ -1,4 +1,5 @@
 # Calculator-for-Physics
+A programm that calculates the velocity by typig the way in time and which calculates the acceleration by typing the velocity in time
 
 How to start the programm:
 As usuall, by doubleclick or via command line.
