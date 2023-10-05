@@ -5,7 +5,7 @@
 #include <conio.h>
 #include <windows.h>	// Include windows.h library for Sleep() function
 
-#define debug
+//#define debug
 
 #ifdef debug							// define "debug" while the programm is beeing testet so assert-functions get compiled 
 #include <assert.h>
@@ -32,15 +32,22 @@ void showTargetedOpt(int opt)
 	else
 		printf("    ");
 
-	puts("Calculate acceleration");
+	puts("Calculate acceleration\n");
+
+	if (opt == 2)
+		printf("--> ");
+	else
+		printf("    ");
+
+	puts("Exit");
 }
 
 void rangeOfOption(int* opt, int range1, int range2)
 {
 	if (*opt < range1)			
-		*opt = 0;			
+		*opt = range2;			
 	else if (*opt > range2)		
-		*opt = 1;			
+		*opt = range1;			
 }
 
 void moveTheArrow(char key1, char key2, int* opt)
@@ -50,7 +57,7 @@ void moveTheArrow(char key1, char key2, int* opt)
 	else if (key1 == -32 && key2 == 80)
 		(*opt)++;
 
-	rangeOfOption(opt, 0, 1);		//	Limits the option code so it's not out of range
+	rangeOfOption(opt, 0, 2);		//	Limits the option code so it's not out of range by the min and max value
 }
 
 char chooseOption()
@@ -106,7 +113,7 @@ double calcV()
 			printf("--> ");
 		else
 			printf("    ");
-		puts("Calculate acceleration \"a\" with the known velocity \"v\" and return to menu after it");
+		puts("Calculate acceleration \"a\" with the known velocity \"v\" and return to menu");
 
 		if (opt == 1)
 			printf("--> ");
@@ -181,9 +188,28 @@ void printWelcomeMessage()
 {
 	int greetingTimeout = 4000;		// The period of time in miliseconds where the welcome message is shown
 
-	puts("Calculator for physics 2023\n");																				// 
-	puts("Calculation of velocity and acceleration\nProgrammed on C\nPlease wait and don't press any button...");		//	 Welcome 
-	Sleep(greetingTimeout);																								//	 message
+	puts("Calculator for physics 2023\n");																					// Welcome  
+	printf("Calculation of velocity and acceleration\nProgrammed on C\nPlease wait and don't press any button...  ");		// message
+																															
+	
+	for (unsigned i = 0, phase = 0; i < 4; i++, phase = i % 4)			// Animation for a loading symbol
+	{
+
+		if (phase == 0)
+			printf("|");
+		else if (phase == 1)
+			printf("/");
+		else if (phase == 2)
+			printf("-");
+		else if (phase == 3)
+			printf("\\");
+
+		printf(" ");
+		Sleep(1000);
+
+		printf("\b\b");
+	}
+
 	system("cls");																										//
 }
 #endif
@@ -202,7 +228,11 @@ int main()
 
 	while (1)
 	{
-		option = chooseOption(); // returns the option 0 or 1
+		option = chooseOption(); // returns the option 0, 1 or 2
+
+		if (option == 2)
+			return 0;
+
 		redirectToChoice(option); // Option 0 stands for calc. of velocity // Option 1 for calc. of acceleration
 	}
 }
