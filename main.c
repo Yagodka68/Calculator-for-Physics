@@ -201,14 +201,19 @@ void printCLAInstructions()
 
 double argumentsInProcess(int argc, char* argv[])
 {
-	if (argc > 3 || argc < 3)
+	if (argc != 3)
 	{
 		puts("Error: Not enough arguments printed.");
 		printCLAInstructions();
 	}
 	
-	double v = (double)*argv[1] / *argv[2];
-	double a = v / *argv[2];
+	char* end = NULL;
+
+	double s = strtod(*argv[1], &end, 10);
+	double t = strtod(*argv[2], &end, 10);
+
+	double v = s / t;
+	double a = v / t;
 
 	printf("v in m/s = %lf\n", v);
 	printf("a in m/s^2 = %lf\n", a);
