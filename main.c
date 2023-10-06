@@ -53,7 +53,7 @@ void showTargetedOpt(unsigned opt)
 	puts("Exit");
 }
 
-void rangeOfOption(unsigned* opt, int minOptVal, int maxOptVal)
+void rangeOfOption(unsigned* opt, unsigned minOptVal, unsigned maxOptVal)
 {
 	if (*opt < minOptVal)
 		*opt = maxOptVal;
@@ -89,7 +89,7 @@ char chooseOption()
 		key2 = _getch();	// Here: the second key
 
 		moveTheArrow(key1, key2, &opt);	// Moves the arrow depending on key by changing the option
-		rangeOfOption(&opt, 0, 2);		//	Limits the option code so it's not out of range by the min and max value
+		rangeOfOption(&opt, (unsigned)0, (unsigned)2);		//	Limits the option code so it's not out of range by the min and max value
 	}
 }
 
@@ -199,8 +199,10 @@ void printCLAInstructions()
 	puts("Type the way s in meters and then the time t in seconds after the programm name");
 }
 
-double argumentsInProcess(int argc, char* argv[])
+void argumentsInProcess(int argc, char* argv[])
 {
+	double s = 0, t = 0, v = 0, a = 0;
+
 	if (argc != 3)
 	{
 		puts("Error: Not enough arguments printed.");
@@ -209,14 +211,22 @@ double argumentsInProcess(int argc, char* argv[])
 	
 	char* end = NULL;
 
-	double s = strtod(*argv[1], &end, 10);
-	double t = strtod(*argv[2], &end, 10);
+	 s = strtod(argv[1], &end, 10);
+	 t = strtod(argv[2], &end, 10);
 
-	double v = s / t;
-	double a = v / t;
+	if (s == 0 || t == 0)
+	{
+		v = 0;
+		a = 0;
+	}
+	else
+	{
+		v = s / t;
+		a = v / t;
+	}
 
-	printf("v in m/s = %lf\n", v);
-	printf("a in m/s^2 = %lf\n", a);
+	printf("v in m/s = %.7lf\n", v);
+	printf("a in m/s^2 = %.7lf\n", a);
 }
 
 #ifndef debug
@@ -281,7 +291,7 @@ int main(int argc, char* argv[])
 
 #ifdef debug
 
-void testRangeOfOption(int* opt)
+void testRangeOfOption(unsigned* opt)
 {
 	*opt = 0;
 	rangeOfOption(opt, 0, 1);
@@ -293,19 +303,23 @@ void testRangeOfOption(int* opt)
 
 	*opt = 2;
 	rangeOfOption(opt, 0, 1);
-	assert(*opt == 1);
+	assert(*opt == 0);
 
 	*opt = 3;
 	rangeOfOption(opt, 0, 1);
-	assert(*opt == 1);
-
-	*opt = -1;
-	rangeOfOption(opt, 0, 1);
 	assert(*opt == 0);
 
-	*opt = -2;
-	rangeOfOption(opt, 0, 1);
-	assert(*opt == 0);
+	*opt = 6;
+	rangeOfOption(opt, 2, 4);
+	assert(*opt == 2);
+
+	*opt = 16;
+	rangeOfOption(opt, 1, 19);
+	assert(*opt == 16);
+
+	*opt = 5;
+	rangeOfOption(opt, 8, 19);
+	assert(*opt == 19);
 }
 
 void testMoveTheArrow(char* key1, char* key2, int* opt) 
@@ -322,7 +336,7 @@ void testMoveTheArrow(char* key1, char* key2, int* opt)
 	moveTheArrow(*key1, *key2, opt);
 	assert(*opt == 0);
 
-	*key1 = 'b';
+	*key1 = 'k';
 	*key2 = NULL;
 	*opt = 0;
 	moveTheArrow(*key1, *key2, opt);
@@ -338,13 +352,13 @@ void testMoveTheArrow(char* key1, char* key2, int* opt)
 	*key2 = 80;
 	*opt = 1;
 	moveTheArrow(*key1, *key2, opt);
-	assert(*opt == 1);
+	assert(*opt == 2);
 
 	*key1 = -32;
 	*key2 = 72;
 	*opt = 0;
 	moveTheArrow(*key1, *key2, opt);
-	assert(*opt == 0);
+	assert(*opt == -1);
 }
 
 void testChooseOption()
