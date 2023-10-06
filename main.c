@@ -1,3 +1,14 @@
+									//**********************************************************************//		
+									//						Calculator for Physics							//
+									//																		//
+									//		with Command Line Arguments support.							//
+									//		Calculates velocity and acceleration.							//
+									//		No other documents (such as txt files and etc) are required.	//
+									//		Works only on Windows OS.										//
+									//																		//
+									//		Made by Deniel													//
+									//**********************************************************************//										
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,7 +16,7 @@
 #include <conio.h>
 #include <windows.h>	// Include windows.h library for Sleep() function
 
-//#define debug
+#define debug
 
 #ifdef debug							// define "debug" while the programm is beeing testet so assert-functions get compiled 
 #include <assert.h>
@@ -18,51 +29,49 @@ void testMoveTheArrow(char*, char*, int*);
 #endif
 
 
-void showTargetedOpt(int opt)
+void showTargetedOpt(unsigned opt)
 {
 	if (opt == 0)
-		printf("--> ");						
+		fputs("--> ", stdout);
 	else
-		printf("    ");
+		fputs("    ", stdout);
 
 	puts("Calculate velocity"); 
 
 	if (opt == 1)
-		printf("--> ");
+		fputs("--> ", stdout);
 	else
-		printf("    ");
+		fputs("    ", stdout);
 
 	puts("Calculate acceleration\n");
 
 	if (opt == 2)
-		printf("--> ");
+		fputs("--> ", stdout);
 	else
-		printf("    ");
+		fputs("    ", stdout);
 
 	puts("Exit");
 }
 
-void rangeOfOption(int* opt, int range1, int range2)
+void rangeOfOption(unsigned* opt, int minOptVal, int maxOptVal)
 {
-	if (*opt < range1)			
-		*opt = range2;			
-	else if (*opt > range2)		
-		*opt = range1;			
+	if (*opt < minOptVal)
+		*opt = maxOptVal;
+	else if (*opt > maxOptVal)
+		*opt = minOptVal;
 }
 
-void moveTheArrow(char key1, char key2, int* opt)
+void moveTheArrow(char key1, char key2, unsigned* opt)
 {
 	if (key1 == -32 && key2 == 72)
 		(*opt)--;
 	else if (key1 == -32 && key2 == 80)
 		(*opt)++;
-
-	rangeOfOption(opt, 0, 2);		//	Limits the option code so it's not out of range by the min and max value
 }
 
 char chooseOption()
 {
-	int opt = 0;
+	unsigned opt = 0;
 	char key1 = 0, key2 = 0;
 
 	while (1)
@@ -71,7 +80,7 @@ char chooseOption()
 		
 		showTargetedOpt(opt);		// Shows the targeted option by arrow
 
-		key1 = _getch();	// reading 2 keys because arrows give 2 values - Here: The first key
+		key1 = _getch();	// Reading 2 keys because arrows give 2 values - Here: The first key
 		system("cls");		
 		if (key1 == 13)		// If key is Enter (with ASCII code 13), the function returns the 
 			return opt;
@@ -80,6 +89,7 @@ char chooseOption()
 		key2 = _getch();	// Here: the second key
 
 		moveTheArrow(key1, key2, &opt);	// Moves the arrow depending on key by changing the option
+		rangeOfOption(&opt, 0, 2);		//	Limits the option code so it's not out of range by the min and max value
 	}
 }
 
@@ -102,7 +112,7 @@ double calcV()
 
 	double v = s / t;
 	
-	int opt = 0;
+	unsigned opt = 0;
 
 	while (1)																				// Offering the option to calculate the acceleration when needed
 	{																						// Constructed similar to the function char chooseOption()
@@ -110,15 +120,15 @@ double calcV()
 		puts("Use Up/Down button to switch\t Use the Enter button to choose\n\n\n");
 
 		if (opt == 0)
-			printf("--> ");
+			fputs("--> ", stdout);
 		else
-			printf("    ");
+			fputs("    ", stdout);
 		puts("Calculate acceleration \"a\" with the known velocity \"v\" and return to menu");
 
 		if (opt == 1)
-			printf("--> ");
+			fputs("--> ", stdout);
 		else
-			printf("    ");
+			fputs("    ", stdout);
 		puts("Return to menu");
 
 		char key1 = _getch();
@@ -141,6 +151,7 @@ double calcV()
 		char key2 = _getch();
 
 		moveTheArrow(key1, key2, &opt);
+		rangeOfOption(&opt, 0, 1);		//	Limits the option code so it's not out of range by the min and max value
 
 		puts("\n\n\n\n\n\n\n");
 	}
@@ -170,7 +181,7 @@ double calcA()
 	system("cls");
 }
 
-double redirectToChoice(int opt)
+void redirectToChoice(unsigned opt)
 {
 	switch (opt)
 	{
@@ -178,9 +189,29 @@ double redirectToChoice(int opt)
 			calcV();		// Calc. veloctity and prints the result.
 			break; 
 		case 1:
-			calcA(0, 0);		// Calc. acceleration and prints the result.
+			calcA();		// Calc. acceleration and prints the result.
 			break;
 	}
+}
+
+void printCLAInstructions()
+{
+	puts("Type the way s in meters and then the time t in seconds after the programm name");
+}
+
+double argumentsInProcess(int argc, char* argv[])
+{
+	if (argc > 3 || argc < 3)
+	{
+		puts("Error: Not enough arguments printed.");
+		printCLAInstructions();
+	}
+	
+	double v = (double)*argv[1] / *argv[2];
+	double a = v / *argv[2];
+
+	printf("v in m/s = %lf\n", v);
+	printf("a in m/s^2 = %lf\n", a);
 }
 
 #ifndef debug
@@ -189,20 +220,20 @@ void printWelcomeMessage()
 	int greetingTimeout = 4000;		// The period of time in miliseconds where the welcome message is shown
 
 	puts("Calculator for physics 2023\n");																					// Welcome  
-	printf("Calculation of velocity and acceleration\nProgrammed on C\nPlease wait and don't press any button...  ");		// message
+	puts("Calculation of velocity and acceleration\nProgrammed on C\nPlease wait and don't press any button...  ");			// message
 																															
-	
-	for (unsigned i = 0, phase = 0; i < 4; i++, phase = i % 4)			// Animation for a loading symbol
+	// Animation for a loading symbol
+	for (unsigned i = 0, phase = 0; i < 4; i++, phase = i % 4)			
 	{
 
-		if (phase == 0)
-			printf("|");
+		if (phase == 0)				/
+			fputs("|", stdout);
 		else if (phase == 1)
-			printf("/");
+			fputs("/", stdout);
 		else if (phase == 2)
-			printf("-");
+			fputs("-", stdout);
 		else if (phase == 3)
-			printf("\\");
+			fputs("\\", stdout);
 
 		printf(" ");
 		Sleep(1000);
@@ -210,23 +241,29 @@ void printWelcomeMessage()
 		printf("\b\b");
 	}
 
-	system("cls");																										//
+	system("cls");																										
 }
 #endif
 
-int main()
+int main(int argc, char* argv[])
 {
 	#ifdef debug
 	testCase();			// starts the test operation
 	#endif
 
-	int option = 0;		
+	if (argc > 1)
+	{
+		argumentsInProcess(argc, argv);
+		return 0;
+	}
 
 	#ifndef debug
-	printWelcomeMessage();																							// PrintsTheWelcome Message
+	printWelcomeMessage();		// PrintsTheWelcome Message
 	#endif 
 
-	while (1)
+	unsigned option = 0;
+
+	while (1)					// The main part
 	{
 		option = chooseOption(); // returns the option 0, 1 or 2
 
