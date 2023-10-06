@@ -6,13 +6,12 @@
 									//		No other documents (such as txt files and etc) are required.	//
 									//		Works only on Windows OS.										//
 									//																		//
-									//		Made by Deniel													//
+									//		Programmed by Deniel											//
 									//**********************************************************************//										
 
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <conio.h>
 #include <windows.h>	// Include windows.h library for Sleep() function
 
@@ -53,7 +52,7 @@ void showTargetedOpt(unsigned opt)
 	puts("Exit");
 }
 
-void rangeOfOption(unsigned* opt, unsigned minOptVal, unsigned maxOptVal)
+void rangeOfOption(int* opt, int minOptVal, int maxOptVal)
 {
 	if (*opt < minOptVal)
 		*opt = maxOptVal;
@@ -61,7 +60,7 @@ void rangeOfOption(unsigned* opt, unsigned minOptVal, unsigned maxOptVal)
 		*opt = minOptVal;
 }
 
-void moveTheArrow(char key1, char key2, unsigned* opt)
+void moveTheArrow(char key1, char key2, int* opt)
 {
 	if (key1 == -32 && key2 == 72)
 		(*opt)--;
@@ -71,7 +70,7 @@ void moveTheArrow(char key1, char key2, unsigned* opt)
 
 char chooseOption()
 {
-	unsigned opt = 0;
+	int opt = 0;
 	char key1 = 0, key2 = 0;
 
 	while (1)
@@ -112,7 +111,7 @@ double calcV()
 
 	double v = s / t;
 	
-	unsigned opt = 0;
+	int opt = 0;
 
 	while (1)																				// Offering the option to calculate the acceleration when needed
 	{																						// Constructed similar to the function char chooseOption()
@@ -241,7 +240,7 @@ void printWelcomeMessage()
 	for (unsigned i = 0, phase = 0; i < 4; i++, phase = i % 4)			
 	{
 
-		if (phase == 0)				/
+		if (phase == 0)				
 			fputs("|", stdout);
 		else if (phase == 1)
 			fputs("/", stdout);
@@ -276,7 +275,7 @@ int main(int argc, char* argv[])
 	printWelcomeMessage();		// PrintsTheWelcome Message
 	#endif 
 
-	unsigned option = 0;
+	int option = 0;
 
 	while (1)					// The main part
 	{
@@ -291,7 +290,7 @@ int main(int argc, char* argv[])
 
 #ifdef debug
 
-void testRangeOfOption(unsigned* opt)
+void testRangeOfOption(int* opt)
 {
 	*opt = 0;
 	rangeOfOption(opt, 0, 1);
@@ -320,6 +319,14 @@ void testRangeOfOption(unsigned* opt)
 	*opt = 5;
 	rangeOfOption(opt, 8, 19);
 	assert(*opt == 19);
+
+	*opt = -5;
+	rangeOfOption(opt, 8, 19);
+	assert(*opt == 8);
+
+	*opt = -6;
+	rangeOfOption(opt, 2, 5);
+	assert(*opt == 2);
 }
 
 void testMoveTheArrow(char* key1, char* key2, int* opt) 
