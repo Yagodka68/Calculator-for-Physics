@@ -13,9 +13,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
+#include <string.h>
 #include <windows.h>	// Include windows.h library for Sleep() function
 
-#define debug
+//#define debug
 
 #ifdef debug							// define "debug" while the programm is beeing testet so assert-functions get compiled 
 #include <assert.h>
@@ -105,7 +106,7 @@ void calcV()
 {
 	double s = 0, t = 0, v = 0;
 
-	puts("s - The lastet way in m\t v - The speed in m/s\t t - The time in s");
+	puts("s - The lasted way in m\t v - The speed in m/s\t t - The time in s");
 	puts("    s");
 	puts("v = -");
 	puts("    t\n\n\n");
@@ -169,12 +170,12 @@ void calcA()
 {
 	double v = 0, t = 0, a = 0;
 
-	puts("a - The acceleration way in m/s^2\t v - The speed in m/s\t t - The time in s");
+	puts("a - The acceleration in m/s^2\t v - The speed in m/s\t t - The time in s");
 	puts("    v");
 	puts("a = -");
 	puts("    t\n\n\n");
 
-	puts("Type v in m:");
+	puts("Type v in m/s:");
 	scanf("%lf", &v);
 	puts("Type t in s:");
 	scanf("%lf", &t);
@@ -193,7 +194,7 @@ void redirectToChoice(unsigned opt)
 	switch (opt)
 	{
 		case 0:
-			calcV();		// Calc. veloctity and prints the result.
+			calcV();		// Calc. veloctity and prints the result. Also offers to calculate the acceleratation by known v and t
 			break; 
 		case 1:
 			calcA();		// Calc. acceleration and prints the result.
@@ -203,22 +204,34 @@ void redirectToChoice(unsigned opt)
 
 void printCLAInstructions()
 {
-	puts("Type the way s in meters and then the time t in seconds after the programm name");
+	puts("After the name of the programm use folowing flags with their values:\n-s *way in m* and -t *time in s*\nExample: calcForPhysic -t 8 -s 90");
 }
 
 void argumentsInProcess(int argc, char* argv[])
 {
 	double s = 0, t = 0, v = 0, a = 0;
+	char* end = NULL;
 
-	if (argc != 3)
+	if (argc - 1 % 2 == 0 && argc - 1 < 2)					// Checking if the amount of arguments is even 
 	{
-		puts("Not enough arguments printed.");
+		puts("Not enough arguments printed");
 		printCLAInstructions();
-
 		return 0;
 	}
-	
-	char* end = NULL;
+
+	if (!strcmp(argv[1], "--help") || !strcmp(argv[1], "-h"))
+	{
+		printCLAInstructions();
+		return 0;
+	}
+
+	for (unsigned i = 0; i < argc; i++)
+	{
+		if (!strcmp(argv[i + 1], "-s"))
+			s = strtod(argv[i + 2], &end, 10);
+		else if (!strcmp(argv[i + 1], "-t"))
+			t = strtod(argv[i + 2], &end, 10);
+	}
 
 	s = strtod(argv[1], &end, 10);
 	t = strtod(argv[2], &end, 10);
@@ -232,16 +245,15 @@ void argumentsInProcess(int argc, char* argv[])
 
 #ifndef debug
 void printWelcomeMessage()
-{
-	int greetingTimeout = 4000;		// The period of time in miliseconds where the welcome message is shown
+{		// The loading screen for 4 seconds
+	unsigned greetingTimeInS = 4;
 
 	puts("Calculator for physics 2023\n");																					// Welcome  
 	puts("Calculation of velocity and acceleration\nProgrammed on C\nPlease wait and don't press any button...  ");			// message
 																															
 	// Animation for a loading symbol
-	for (unsigned i = 0, phase = 0; i < 4; i++, phase = i % 4)			
+	for (unsigned i = 0, phase = 0; i < greetingTimeInS; i++, phase = i % 4)			
 	{
-
 		if (phase == 0)				
 			fputs("|", stdout);
 		else if (phase == 1)
@@ -252,7 +264,7 @@ void printWelcomeMessage()
 			fputs("\\", stdout);
 
 		printf(" ");
-		Sleep(1000);
+		Sleep(1000); 
 
 		printf("\b\b");
 	}
