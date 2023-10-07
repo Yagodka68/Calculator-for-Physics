@@ -211,8 +211,9 @@ void argumentsInProcess(int argc, char* argv[])
 {
 	double s = 0, t = 0, v = 0, a = 0;
 	char* end = NULL;
+	int CLANum = argc - 1;
 
-	if (argc - 1 % 2 == 0 && argc - 1 < 2)					// Checking if the amount of arguments is even 
+	if (CLANum % 2 != 0)					// Checking if the amount of arguments is even 
 	{
 		puts("Not enough arguments printed");
 		printCLAInstructions();
@@ -225,16 +226,14 @@ void argumentsInProcess(int argc, char* argv[])
 		return 0;
 	}
 
-	for (unsigned i = 0; i < argc; i++)
+	for (unsigned i = 1; i < argc; i += 2)
 	{
-		if (!strcmp(argv[i + 1], "-s"))
-			s = strtod(argv[i + 2], &end, 10);
-		else if (!strcmp(argv[i + 1], "-t"))
-			t = strtod(argv[i + 2], &end, 10);
+		if (!strcmp(argv[i], "-s"))
+			s = strtod(argv[i + 1], &end, 10);
+		else if (!strcmp(argv[i], "-t"))
+			t = strtod(argv[i + 1], &end, 10);
 	}
 
-	s = strtod(argv[1], &end, 10);
-	t = strtod(argv[2], &end, 10);
 
 	v = div2Vals(s, t);
 	a = div2Vals(v, t);
