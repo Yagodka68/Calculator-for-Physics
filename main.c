@@ -232,8 +232,13 @@ void argumentsInProcess(int argc, char* argv[])
 			s = strtod(argv[i + 1], &end, 10);
 		else if (!strcmp(argv[i], "-t"))
 			t = strtod(argv[i + 1], &end, 10);
+		else
+		{
+			puts("Wrong arguments printed");
+			printCLAInstructions();
+			return 0;
+		}
 	}
-
 
 	v = div2Vals(s, t);
 	a = div2Vals(v, t);
